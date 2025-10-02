@@ -5,7 +5,7 @@ FROM eclipse-temurin:17-jre
 WORKDIR /app
 
 # Copy the pre-built JAR file (built by Jenkins)
-COPY ./target/java-hello-world-web-1.0-SNAPSHOT.jar app.jar
+COPY ./target/java-hello-world-web*.jar app.jar
 
 # Expose port
 EXPOSE 8080
