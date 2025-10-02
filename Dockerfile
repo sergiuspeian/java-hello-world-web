@@ -1,40 +1,14 @@
-# Multi-stage build for Spring Boot application
-FROM maven:3.8.6-openjdk-17-slim AS build
+# Use OpenJDK 17 runtime
+FROM openjdk:17-jre-slim
 
 # Set working directory
 WORKDIR /app
 
-# Copy pom.xml first to leverage Docker layer caching
-COPY pom.xml .
+# Copy the pre-built JAR file (built by Jenkins)
+COPY ./target/java-hello-world-web-1.0-SNAPSHOT.jar app.jar
 
-# Download dependencies
-RUN mvn dependency:go-offline -B
-
-# Copy source code
-COPY src ./src
-
-# Build the application
-RUN mvn clean package -DskipTests
-
-# Production stage
-FROM openjdk:17-jdk-slim
-
-# Set working directory
-WORKDIR /app
-
-# Copy the JAR file from build stage
-COPY --from=build /app/target/*.jar app.jar
-
-# Create a non-root user for security
-RUN addgroup --system appgroup && adduser --system --ingroup appgroup appuser
-USER appuser
-
-# Expose port 8080
+# Expose port
 EXPOSE 8080
 
-# Health check
-HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-  CMD curl -f http://localhost:8080/ || exit 1
-
 # Run the application
-ENTRYPOINT ["java", "-jar", "app.jar"]
+CMD ["java", "-jar", "app.jar"]
