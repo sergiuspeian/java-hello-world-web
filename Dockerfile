@@ -1,5 +1,5 @@
-# Use OpenJDK 17 runtime
-FROM openjdk:17-jre-slim
+# Use Eclipse Temurin OpenJDK 17 runtime (recommended replacement)
+FROM eclipse-temurin:17-jre
 
 # Set working directory
 WORKDIR /app
